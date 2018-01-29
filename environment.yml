@@ -1,0 +1,21 @@
+name: causal_benchmark
+channels:
+- defaults
+dependencies:
+- certifi=2016.2.28=py35_0
+- future=0.16.0=py35_1
+- mkl=2017.0.3=0
+- numpy=1.13.1=py35_0
+- pandas=0.20.3=py35_0
+- pip=9.0.1=py35_1
+- python=3.5.4=0
+- python-dateutil=2.6.1=py35_0
+- pytz=2017.2=py35_0
+- setuptools=36.4.0=py35_1
+- six=1.10.0=py35_1
+- vc=14=0
+- vs2015_runtime=14.0.25420=0
+- wheel=0.29.0=py35_0
+- wincertstore=0.2=py35_0
+prefix: C:\ProgramData\Anaconda3\envs\causal_benchmark
+
