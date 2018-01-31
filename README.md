@@ -130,7 +130,9 @@ for observed_dataset in combine_covariates_with_observed(COVARIATE_FILE_PATH,FAC
 If you use either the data, the evaluation metrics or the evaluation code, please cite this 
 repository as follows ([bibtex format](https://zenodo.org/record/1163587/export/hx#.WnHnPq6WY-U)):
 ```
-Ehud Karavani, Yishai Shimoni, & Chen Yanover. (2018, January 31). IBM Causal Inference Benchmarking Framework (Version v1.0.0). Zenodo. http://doi.org/10.5281/zenodo.1163587
+Ehud Karavani, Yishai Shimoni, & Chen Yanover. (2018, January 31). 
+IBM Causal Inference Benchmarking Framework (Version v1.0.0). 
+Zenodo. http://doi.org/10.5281/zenodo.1163587
 ```
 
 ## License
