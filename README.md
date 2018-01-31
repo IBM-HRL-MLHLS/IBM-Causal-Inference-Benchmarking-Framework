@@ -11,19 +11,37 @@ Framework for evaluating causal inference methods.
  - [Authors](#authors)
 
 ## General
-Causality-Benchmark is a library developed by IBM Research for benchmarking algorithms that 
-estimate causal effect.
-The framework includes unlabeled data, labeled data, and code for scoring algorithm predictions.  
-It can benchmark predictions of both population effect size and individual effect size.  
+Causality-Benchmark is a library developed by IBM Research Haifa for 
+benchmarking algorithms that estimate the causal effect of a treatment on 
+some outcome. The framework includes unlabeled data, labeled data, and code 
+for scoring algorithm predictions. It can benchmark predictions of both 
+population effect size and individual effect size.  
 
-The evaluation script is not bounded to the provided data, and can be used on other data as 
-long as some basic requirements are kept regarding the formats.  
-For more technical details about the evaluation metrics and the data, please refer to the 
-framework menuscript **TODO: Link to the menuscript/technical report**
+The feature matrix is derived from the 
+[linked birth and infant death data](https://www.cdc.gov/nchs/nvss/linked-birth.htm),
+and the labeled and unlabeled data are based on simulated models of the 
+treatment assignment, treatment effect, and censoring.
 
-Please note that due to GitHub limitation, only a sample of the data is available in this 
-repository. However, you can manually access and download the entire dataset from the 
-[Synapse sharing platform](https://www.synapse.org/#!Synapse:syn11294478/files/)
+The evaluation script is not bounded to the provided data, 
+and can be used on other data as 
+long as some basic requirements are kept regarding the formats. 
+The evaluation metrics that are provided include the RMSE, the 
+effect-normalized RMSE, and several metrics regarding the confidence 
+intervals. 
+More technical details regarding the calculated metrics and the formats of the 
+labeled and unlabeled data will be published soon through a related manuscript. 
+Most of the details can be found in the
+[Casual Inference Cahllenge 2018](https://www.synapse.org/#!Synapse:syn11294478)
+website.
+
+Please note that due to GitHub limitation, only a sample of the data is 
+available in this repository. However, you can manually access and download 
+the entire dataset from the 
+[Synapse sharing platform](https://www.synapse.org/#!Synapse:syn11294478/files/).
+Furthermore, since the benchmarking tool is used in the 
+[Casual Inference Cahllenge 2018](https://www.synapse.org/#!Synapse:syn11294478),
+the dataset currently includes a handful of example data with labeles.
+The full set will be available when the challenge ends.
 
 ## Getting Started
 ### Prerequisites
