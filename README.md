@@ -128,15 +128,10 @@ for observed_dataset in combine_covariates_with_observed(COVARIATE_FILE_PATH,FAC
  
 ## Citing
 If you use either the data, the evaluation metrics or the evaluation code, please cite this 
-report as follows:
+repository as follows ([bibtex format](https://zenodo.org/record/1163587/export/hx#.WnHnPq6WY-U)):
 ```
-@article{causality-benchmark,
-  title={......},
-  author={....},
-  journal={arXiv preprint arXiv:xxx.yyyyy},
-  year={2018}
+Ehud Karavani, Yishai Shimoni, & Chen Yanover. (2018, January 31). IBM Causal Inference Benchmarking Framework (Version v1.0.0). Zenodo. http://doi.org/10.5281/zenodo.1163587
 ```
-**TODO: complete citation info** 
 
 ## License
 The current content is open source under Apache License 2.0. For full specification see: 
