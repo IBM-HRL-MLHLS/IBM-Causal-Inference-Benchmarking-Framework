@@ -28,7 +28,7 @@ long as some basic requirements are kept regarding the formats.
 Full technical details regarding the calculated metrics and the formats of the 
 labeled and unlabeled data will be published soon through a related manuscript. 
 Meanwhile, most of the details can be found in the 
-[2018 Casual Inference Challenge](https://www.synapse.org/ACIC2018Challenge)
+[2018 Causal Inference Challenge](https://www.synapse.org/ACIC2018Challenge)
 website.
 
 Please note that due to GitHub limitation, only a sample of the data is 
@@ -36,7 +36,7 @@ available in this repository. However, you can manually access and download
 the entire dataset from the 
 [Synapse sharing platform](https://www.synapse.org/#!Synapse:syn11294478/files/).
 Furthermore, since the benchmarking tool is used in the 
-[Casual Inference Challenge 2018](https://www.synapse.org/#!Synapse:syn11294478),
+[Causal Inference Challenge 2018](https://www.synapse.org/#!Synapse:syn11294478),
 the dataset currently includes a handful of example data with labels.
 The full set of labeled data will be available when the challenge ends.
 
@@ -128,15 +128,12 @@ for observed_dataset in combine_covariates_with_observed(COVARIATE_FILE_PATH,FAC
  
 ## Citing
 If you use either the data, the evaluation metrics or the evaluation code, please cite this 
-report as follows:
+repository as follows ([bibtex format](https://zenodo.org/record/1163587/export/hx#.WnHnPq6WY-U)):
 ```
-@article{causality-benchmark,
-  title={......},
-  author={....},
-  journal={arXiv preprint arXiv:xxx.yyyyy},
-  year={2018}
+Ehud Karavani, Yishai Shimoni, & Chen Yanover. (2018, January 31). 
+IBM Causal Inference Benchmarking Framework (Version v1.0.0). 
+Zenodo. http://doi.org/10.5281/zenodo.1163587
 ```
-**TODO: complete citation info** 
 
 ## License
 The current content is open source under Apache License 2.0. For full specification see: 
