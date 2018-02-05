@@ -9,9 +9,9 @@ Created on Dec 19, 2017
 @author: EHUD KARAVANI
 """
 from __future__ import division as __division, print_function as __print_function
-from future.utils import raise_with_traceback
 import argparse
 import os
+from future.utils import raise_with_traceback
 
 import pandas as pd
 import numpy as np
@@ -19,7 +19,8 @@ import numpy as np
 
 COUNTERFACTUAL_FILE_SUFFIX = "_cf"
 FILENAME_EXTENSION = ".csv"
-DELIMITER = ","
+TABULAR_DELIMITER = ","
+
 
 # Column header names from data
 HEADER_Y1 = "y1"                            # cf files + individual prediction files: outcome under treatment
@@ -40,15 +41,16 @@ def _score_population(predictions_location, cf_dir_location):
     Args:
         predictions_location (str): Path to a single tabular file where the effect estimations are located.
                                     Files must of tabular format
-                                     * containing 4 columns: HEADER_POP_IDX, HEADER_EFFECT_SIZE, HEADER_CI_LEFT, HEADER_CI_RIGHT.
-                                     * delimited by DELIMITER.
+                                     * containing 4 columns: HEADER_POP_IDX, HEADER_EFFECT_SIZE, HEADER_CI_LEFT,
+                                       HEADER_CI_RIGHT.
+                                     * delimited by TABULAR_DELIMITER.
                                      * have FILENAME_EXTENSION extension to them.
                                     These global variables specified above can be changed when importing the module.
         cf_dir_location (str): Path to a directory containing the counter-factual files (i.e. labeled, ground-truth
                                data).
                                Files must be of tabular format
                                 * containing 3 columns: HEADER_IND_IDX, HEADER_Y1, HEADER_Y0.
-                                * delimited by DELIMITER.
+                                * delimited by TABULAR_DELIMITER.
                                 * have the suffix specified in COUNTERFACTUAL_FILE_SUFFIX.
                                 * have FILENAME_EXTENSION extension to them.
                                These global variables specified above can be changed when importing the module.
@@ -57,7 +59,8 @@ def _score_population(predictions_location, cf_dir_location):
         pd.Series: Scores. Where Series' Index is the metric name and the value is the evaluation of that metric.
     """
     ufids = os.listdir(cf_dir_location)
-    ufids = [f.rsplit("_")[0] for f in ufids if f.lower().endswith(COUNTERFACTUAL_FILE_SUFFIX + FILENAME_EXTENSION)]
+    ufids = [f.rsplit(sep=COUNTERFACTUAL_FILE_SUFFIX + FILENAME_EXTENSION, maxsplit=1)[0]
+             for f in ufids if f.lower().endswith(COUNTERFACTUAL_FILE_SUFFIX + FILENAME_EXTENSION)]
 
     # Gather scoring statistics:
     ratio = pd.Series(index=ufids, name="population_ratio")
@@ -66,8 +69,12 @@ def _score_population(predictions_location, cf_dir_location):
     coverage = pd.Series(data=False, index=ufids, dtype=np.dtype(bool), name="population_coverage")
 
     # Get data:      # HEADER_POP_IDX | HEADER_EFFECT_SIZE | HEADER_CI_LEFT | HEADER_CI_RIGHT
-    estimates = pd.read_csv(predictions_location, index_col=HEADER_POP_IDX, sep=DELIMITER)
-    assert set(estimates.index) == set(ufids)
+    estimates = pd.read_csv(predictions_location, index_col=HEADER_POP_IDX, sep=TABULAR_DELIMITER)
+
+    if set(ufids) - set(estimates.index):
+        raise_with_traceback(AssertionError("Seems there are ground-truth files with no corresponding predictions\n"
+                                            "Unmatched files are:\n" +
+                                            "\n".join([str(i) for i in (set(ufids) - set(estimates.index))])))
 
     true_effects = pd.Series(index=ufids)
     dataset_sizes = pd.Series(index=ufids, name="size")
@@ -75,12 +82,12 @@ def _score_population(predictions_location, cf_dir_location):
     for ufid in ufids:
         # Get the true effect:
         gt = pd.read_csv(os.path.join(cf_dir_location, ufid + COUNTERFACTUAL_FILE_SUFFIX + FILENAME_EXTENSION),
-                         sep=DELIMITER)
+                         sep=TABULAR_DELIMITER)
         true_effect = np.mean(gt[HEADER_Y1] - gt[HEADER_Y0])
         true_effects[ufid] = true_effect
 
         # Get the population estimates:     | HEADER_EFFECT_SIZE | HEADER_CI_LEFT | HEADER_CI_RIGHT |
-        estimate = estimates.loc[ufid, :]
+        estimate = estimates.loc[ufid, :]                           # No need to "try:" due to content assertion above
 
         # Calculate the sufficient statistics:
         ratio[ufid] = (estimate[HEADER_EFFECT_SIZE] + EPSILON) / (true_effect + EPSILON)
@@ -143,14 +150,14 @@ def _score_individual(predictions_location, cf_dir_location):
                                (i.e. prediction of factual and counterfactual outcomes for each individual).
                                Files must of tabular format
                                 * containing 3 columns: HEADER_IND_IDX, HEADER_Y1, HEADER_Y0.
-                                * delimited by DELIMITER.
+                                * delimited by TABULAR_DELIMITER.
                                 * have FILENAME_EXTENSION extension to them.
                                These global variables specified above can be changed when importing the module.
         cf_dir_location (str): Path to a directory containing the counter-factual files (i.e. labeled, ground-truth
                                data).
                                Files must be of tabular format
                                 * containing 3 columns: HEADER_IND_IDX, HEADER_Y1, HEADER_Y0.
-                                * delimited by DELIMITER.
+                                * delimited by TABULAR_DELIMITER.
                                 * have the suffix specified in COUNTERFACTUAL_FILE_SUFFIX.
                                 * have FILENAME_EXTENSION extension to them.
                                These global variables specified above can be changed when importing the module.
@@ -159,22 +166,32 @@ def _score_individual(predictions_location, cf_dir_location):
         pd.Series: Scores. Where Series' Index is the metric name and the value is the evaluation of that metric.
     """
     ufids = os.listdir(cf_dir_location)
-    ufids = [f.rsplit("_")[0] for f in ufids if f.lower().endswith(COUNTERFACTUAL_FILE_SUFFIX + FILENAME_EXTENSION)]
+    ufids = [f.rsplit(sep=COUNTERFACTUAL_FILE_SUFFIX + FILENAME_EXTENSION, maxsplit=1)[0]
+             for f in ufids if f.lower().endswith(COUNTERFACTUAL_FILE_SUFFIX + FILENAME_EXTENSION)]
 
-    enormse = pd.Series(index=ufids, name="_".join(["individual", "enormse"]))
-    rmse = pd.Series(index=ufids, name="_".join(["individual", "rmse"]))
-    bias = pd.Series(index=ufids, name="_".join(["individual", "bias"]))
+    enormse = pd.Series(index=ufids, name="individual_enormse")
+    rmse = pd.Series(index=ufids, name="individual_rmse")
+    bias = pd.Series(index=ufids, name="individual_bias")
     dataset_sizes = pd.Series(index=ufids, name="size")
 
     for ufid in ufids:
         # Get the true effect:
         gt = pd.read_csv(os.path.join(cf_dir_location, ufid + COUNTERFACTUAL_FILE_SUFFIX + FILENAME_EXTENSION),
-                         index_col=HEADER_IND_IDX, sep=DELIMITER)
+                         index_col=HEADER_IND_IDX, sep=TABULAR_DELIMITER)
         true_effect = gt[HEADER_Y1] - gt[HEADER_Y0]
 
         # Get estimated effect:                         submission format:    N rows: patient_ID | Y0 | Y1
-        estimates = pd.read_csv(os.path.join(predictions_location, ufid + FILENAME_EXTENSION),
-                                index_col=HEADER_IND_IDX, sep=DELIMITER)
+        try:
+            estimates = pd.read_csv(os.path.join(predictions_location, ufid + FILENAME_EXTENSION),
+                                    index_col=HEADER_IND_IDX, sep=TABULAR_DELIMITER)
+        except IOError as e:           # Python 2 compatible for FileNotFoundError
+            e.args = (e.args[0] + "\n\t" + "A prediction might be missing.\n"
+                                           "Seems that the file ({fn}) was found in the ground-truth directory but no "
+                                           "corresponding estimation was found in your "
+                                           "predictions.".format(fn=ufid),) + e.args[1:]
+
+            raise_with_traceback(e)
+
         estimated_effect = estimates[HEADER_Y1] - estimates[HEADER_Y0]
 
         # Evaluate:
@@ -235,20 +252,21 @@ def evaluate(predictions_location, cf_dir_location, is_individual_prediction=Fal
         predictions_location (str): if prediction type is individual effect then a path to a directory containing
                                     estimations in tabular files for each data instance formatted as following:
                                      * containing 3 columns: HEADER_IND_IDX, HEADER_Y1, HEADER_Y0.
-                                     * delimited by DELIMITER.
+                                     * delimited by TABULAR_DELIMITER.
                                      * have FILENAME_EXTENSION extension to them.
                                     if prediction type is not individual (i.e. population effect), then a path to a
                                     single tabular file with each row corresponding to a data instance, formatted as
                                     following:
-                                     * containing 4 columns: HEADER_IND_IDX, HEADER_EFFECT_SIZE, HEADER_CI_LEFT, HEADER_CI_RIGHT.
-                                     * delimited by DELIMITER.
+                                     * containing 4 columns: HEADER_IND_IDX, HEADER_EFFECT_SIZE, HEADER_CI_LEFT,
+                                       HEADER_CI_RIGHT.
+                                     * delimited by TABULAR_DELIMITER.
                                      * have FILENAME_EXTENSION extension to them.
                                     These global variables specified above can be changed when importing the module.
         cf_dir_location (str): Path to a directory containing the counter-factual files (i.e. labeled, ground-truth
                                data).
                                Files must be of tabular format
                                 * containing 3 columns: *HEADER_IND_IDX*, *HEADER_Y1*, *HEADER_Y0*.
-                                * delimited by DELIMITER.
+                                * delimited by TABULAR_DELIMITER.
                                 * have the suffix specified in COUNTERFACTUAL_FILE_SUFFIX.
                                 * have FILENAME_EXTENSION extension to them.
                                These global variables specified above can be changed when importing the module.
@@ -322,7 +340,7 @@ def __main(argv):
 
     # Output results
     if argv.output_path is not None:
-        scores.to_csv(argv.output_path, header=True, index=True, encoding="utf-8", decimal=".", sep=DELIMITER)
+        scores.to_csv(argv.output_path, header=True, index=True, encoding="utf-8", decimal=".", sep=TABULAR_DELIMITER)
     else:
         print("\n", scores)
 

@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 
 from causalbenchmark import evaluate
-evaluate.DELIMITER = "\t"
+evaluate.TABULAR_DELIMITER = "\t"
 
 
 class TestEvaluate(unittest.TestCase):
@@ -108,7 +108,7 @@ class TestEvaluate(unittest.TestCase):
                                                          index=["enormse", "enormse_4", "enormse_6", "rmse", "bias",
                                                                 "coverage", "encis", "cic"]))
 
-    def test_input_assertion(self):
+    def test_input_consistency(self):
         data_path = os.path.join("test_data_files", "multi_sized_datasets", "dummy_data")
 
         # population effect with directory input:
@@ -124,6 +124,16 @@ class TestEvaluate(unittest.TestCase):
         with self.subTest(file_path=file_path, data_path=data_path, is_individual_prediction=is_individual_prediction):
             self.assertRaises(RuntimeError, evaluate.evaluate,
                               file_path, data_path, is_individual_prediction)
+
+    def test_missing_predictions(self):
+        data_path = os.path.join("test_data_files", "single_sized_datasets", "dummy_data")
+        individual_prediction_dir_path = os.path.join("test_data_files", "single_sized_datasets",
+                                                      "individual_prediction_missing")
+        self.assertRaises(IOError, evaluate._score_individual, individual_prediction_dir_path, data_path)
+
+        population_prediction_file_path = os.path.join("test_data_files", "single_sized_datasets",
+                                                       "population_prediction_missing.csv")
+        self.assertRaises(AssertionError, evaluate._score_population, population_prediction_file_path, data_path)
 
 
 if __name__ == '__main__':
