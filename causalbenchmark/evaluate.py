@@ -321,6 +321,11 @@ def __get_parser():
                         help="If provided, a csv file of the evaluation results will be saved under path. If not, it "
                              "will be printed to terminal's standard output.",
                         type=str)
+
+    parser.add_argument("--delimiter", dest="delimiter",
+                        help="The delimiter used in the tabular files provided \n"
+                             "(both counterfactual outcomes files and user's prediction file(s).",
+                        type=str, default=TABULAR_DELIMITER)
     parser.add_argument("--cf_suffix", dest="cf_suffix",
                         help="If provided, a suffix distinguishing the counterfactual files from their corresponding "
                              "factual files (i.e. the files holding the actual treatment assignment and the observed"
@@ -351,4 +356,5 @@ def __main(argv):
 if __name__ == '__main__':
     argv = __get_parser().parse_args()
     COUNTERFACTUAL_FILE_SUFFIX = argv.cf_suffix
+    TABULAR_DELIMITER = argv.delimiter
     __main(argv)
