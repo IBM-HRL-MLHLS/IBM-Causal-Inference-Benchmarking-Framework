@@ -2,6 +2,7 @@
 Framework for evaluating causal inference methods.
 
  - [Overview](#overview)
+   - [Data](#data)
  - [Getting Started](#getting-started)
    - [Prerequisites](#prerequisites)
    - [Installation](#installation)
@@ -13,35 +14,33 @@ Framework for evaluating causal inference methods.
 ## Overview
 Causality-Benchmark is a library developed by IBM Research Haifa for 
 benchmarking algorithms that estimate the causal effect of a treatment on 
-some outcome. The framework includes unlabeled data, labeled data, and code 
-for scoring algorithm predictions. It can benchmark predictions of both 
-population effect size and individual effect size.  
+some outcome. The framework includes unlabeled data, labeled data, code
+for scoring algorithm predictions based on both novel and established metrics.
+It can benchmark predictions of both
+population effect size and individual effect size.
 
+For a comprehensive description of the metrics, the data generating process and other technical details,
+please refer to the corresponding 
+[manuscript on arXiv](https://arxiv.org/abs/1802.05046)
+
+### Data
 Currently, the framework contains one essential dataset, 
 a feature matrix that is derived from the 
 [linked birth and infant death data](https://www.cdc.gov/nchs/nvss/linked-birth.htm),
-and the labeled and unlabeled data are simulated models of the 
-treatment assignment, treatment effect and censoring data based on it.  
-More details regarding the data can be found in the [LBIDD README file](data/LBIDD/README.md).
+as well as labeled and unlabeled data of
+treatment assignment, treatment effect and censoring data
+from simulated models based on it.
+More details regarding the LBIDDb data can be found in the [LBIDD README file](data/LBIDD/README.md).
 
 However, the evaluation script is not bounded to the provided data, 
 and can be used on other data as 
 long as some basic requirements are kept regarding the formats. 
-Full technical details regarding the calculated metrics and the formats of the 
-labeled and unlabeled data will be published soon through a related manuscript. 
-Meanwhile, most of the details can be found in the 
-[2018 Causal Inference Challenge](https://www.synapse.org/ACIC2018Challenge)
-website.
 
-Please note that due to GitHub limitation, only a sample of the data is 
-available in this repository. However, you can manually access and download 
-the entire dataset from the 
+Please note that due to GitHub's technical limitation, 
+only a sample of the data is available in this repository.
+You can manually access and download the entire dataset from the
 [framework's corresponding data repository](https://www.synapse.org/IBMCausalityData) 
 located on the Synapse sharing platform.
-Furthermore, since the benchmarking tool is used in the 
-[Causal Inference Challenge 2018](https://www.synapse.org/#!Synapse:syn11294478),
-the dataset currently includes a handful of example data with labels.
-The full set of labeled data will be available when the challenge ends.
 
 ## Getting Started
 ### Prerequisites
@@ -68,7 +67,9 @@ nor the data. Use this option in case you only want to score using the evaluatio
 ```bash
 $ pip install git+https://github.com/IBM-HRL-MLHLS/IBM-Causal-Inference-Benchmarking-Framework.git
 ```
-(Unix user's might need to use `sudo pip` for system-wide installation or pip's `--user` flag for user-scheme install)
+(Depending on their permissions,
+Unix users might need to use `sudo pip` for system-wide installation 
+or pip's `--user` flag for user-scheme install)
 
 ### Usage
 #### Evaluation
@@ -81,7 +82,7 @@ $ evaluate PATH_TO_PREDICTION_OUTPUT PATH_TO_COUNTERFACTUAL_FILES_DIRECTORY
 ```
 (Windows users should use `$ python evaluate.py` instead of just `evaluate`)
 
-Type `evaluate -h` for the full manual.
+> Type `evaluate -h` for the full manual.
 
 ##### Python module API
 ```python
@@ -105,14 +106,15 @@ scores = evaluate(PATH_TO_PREDICTION_OUTPUT, PATH_TO_COUNTERFACTUAL_FILES_DIRECT
 ##### Expected Files
 * The counterfactual outcomes files (holding y^1, y^0 for each individual), are expected to be a
   directory with different comma-separated-files and their file names corresponding to the
-  data-instance but having some suffix (e.g. `"_cf.csv"`).
+  data-instance but having some suffix (default `"_cf.csv"`).
 * The predictions for population effect size are expected to be one comma-delimited-file with
   every row corresponding to a different data-instance.
 * The prediction for individual effect size are expected to be a directory containing different
   comma-delimited-files, each corresponding to a data-instance and each containing the
   estimated outcome under no-treatment and under positive treatment.
 
-For full explanation, please refer to the [menuscript](https://arxiv.org/abs/1802.05046).
+For further explanations please see 
+[ACIC 2018 Data Challenge wiki](https://www.synapse.org/#!Synapse:syn11294478/wiki/494272)
 
 #### Estimation
 To avoid inflating file sizes for nothing, 
@@ -131,9 +133,24 @@ FACTUAL_FILE_DIR = "/SOME/PATH/TO/DIRECTORY/WITH/FACTUAL/FILES"
 for observed_dataset in combine_covariates_with_observed(COVARIATE_FILE_PATH,FACTUAL_FILE_DIR):
     causal_effect_estimations = apply_my_awesome_model(observed_dataset)
 ```
+ For further details see the *Composing the Dataset for Analysis* section in 
+ [here](https://www.synapse.org/#!Synapse:syn11738767/wiki/512854)
  
 ## Citing
-If you use either the data, the evaluation metrics or the evaluation code, please cite this 
+*NEW:* This code base is accompanied by a manuscript, providing further details and justifications:
+[https://arxiv.org/abs/1802.05046](https://arxiv.org/abs/1802.05046)
+```
+@article{2018_CausalBenchmark,
+  author = {{Shimoni}, Y. and {Yanover}, C. and {Karavani}, E. and {Goldschmnidt}, Y.},
+  title = "{Benchmarking Framework for Performance-Evaluation of Causal Inference Analysis}",
+  journal = {ArXiv preprint arXiv:1802.05046},
+  year = {2018},
+}
+```
+
+----------------
+
+If you use either the data, the evaluation metrics or the evaluation code, please cite this
 repository as follows ([bibtex format](https://zenodo.org/record/1163587/export/hx#.WnHnPq6WY-U)):
 ```
 Ehud Karavani, Yishai Shimoni, & Chen Yanover. (2018, January 31). 
