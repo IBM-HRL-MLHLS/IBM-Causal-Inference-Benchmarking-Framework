@@ -57,17 +57,18 @@ This will clone the entire repository first, so you would have both the data and
 on top of the evaluation scripts of the library. This way you could use your tools on the benchmark's
 data also.
 ```bash
-git clone https://github.com/IBM-HRL-MLHLS/IBM-Causal-Inference-Benchmarking-Framework.git
-cd IBM-Causal-Inference-Benchmarking-Framework
-python setup.py install
+$ git clone https://github.com/IBM-HRL-MLHLS/IBM-Causal-Inference-Benchmarking-Framework.git
+$ cd IBM-Causal-Inference-Benchmarking-Framework
+$ python setup.py install
 ```
 
 #### Using pip 
 This will only install the evaluation scripts of the library and will include neither the tests
 nor the data. Use this option in case you only want to score using the evaluation metrics.
 ```bash
-pip install git+https://github.com/IBM-HRL-MLHLS/IBM-Causal-Inference-Benchmarking-Framework.git
-``` 
+$ pip install git+https://github.com/IBM-HRL-MLHLS/IBM-Causal-Inference-Benchmarking-Framework.git
+```
+(Unix user's might need to use `sudo pip` for system-wide installation or pip's `--user` flag for user-scheme install)
 
 ### Usage
 #### Evaluation
@@ -75,9 +76,11 @@ The evaluation script can be used either from a command line or from inside anot
 script.  
 ##### Command-line API
 ```bash
-$ cd IBM-Causal-Inference-Benchmarking-Framework/evaluattion
+$ cd IBM-Causal-Inference-Benchmarking-Framework/causalbenchmark
 $ evaluate PATH_TO_PREDICTION_OUTPUT PATH_TO_COUNTERFACTUAL_FILES_DIRECTORY
 ```
+(Windows users should use `$ python evaluate.py` instead of just `evaluate`)
+
 Type `evaluate -h` for the full manual.
 
 ##### Python module API
@@ -90,8 +93,8 @@ scores = evaluate(PATH_TO_PREDICTION_OUTPUT, PATH_TO_COUNTERFACTUAL_FILES_DIRECT
 
 ##### Population vs individual prediction
 The default behaviour of the scoring script is to evaluate the average treatment effect 
-in the population.
-In case the user wish to estimate individual effect size, one should add the `individual` flag:  
+in the sample.
+In case the user wishes to estimate individual effect size, one should add the `--individual` flag:
 ```bash
 $ evaluate PATH_TO_PREDICTION_OUTPUT PATH_TO_COUNTERFACTUAL_FILES_DIRECTORY --i
 ``` 
@@ -100,7 +103,7 @@ scores = evaluate(PATH_TO_PREDICTION_OUTPUT, PATH_TO_COUNTERFACTUAL_FILES_DIRECT
                   individual_prediction=True)
 ```
 ##### Expected Files
-* The counterfactual outcomes files (holding $y^1$, $y^0$ for each individual), are expected to be a
+* The counterfactual outcomes files (holding y^1, y^0 for each individual), are expected to be a
   directory with different comma-separated-files and their file names corresponding to the
   data-instance but having some suffix (e.g. `"_cf.csv"`).
 * The predictions for population effect size are expected to be one comma-delimited-file with
@@ -109,7 +112,7 @@ scores = evaluate(PATH_TO_PREDICTION_OUTPUT, PATH_TO_COUNTERFACTUAL_FILES_DIRECT
   comma-delimited-files, each corresponding to a data-instance and each containing the
   estimated outcome under no-treatment and under positive treatment.
 
-For full explanation, please refer to the menuscript.
+For full explanation, please refer to the [menuscript](https://arxiv.org/abs/1802.05046).
 
 #### Estimation
 To avoid inflating file sizes for nothing, 

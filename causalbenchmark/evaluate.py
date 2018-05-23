@@ -306,19 +306,20 @@ def __get_parser():
 
     parser.add_argument("predictions_location",
                         help="Path to where prediction directory/file resides.\n"
-                             "a tabular csv file is expected if prediction type is population and directory is "
-                             "expected if prediction type is population. Refer the evaluate() docstring for more "
-                             "information")
+                             "a tabular csv file is expected if prediction type is sample average and a directory is "
+                             "expected if using the --individual flag. \n"
+                             "Refer the evaluate() docstring for more information")
     parser.add_argument("cf_dir_location",
-                        help="A path where the ground-truth data (i.e. counterfactual files) are located.\n",
+                        help="A path to a directory where the ground-truth data (i.e. counterfactual outcome files) "
+                             "are located.\n",
                         type=str)
     parser.add_argument("-i", "--individual", dest="is_individual_prediction",
-                        help="Whether to evaluate individual effect predictions If not stated, prediction type is "
-                             "assumed to be of the treatment effect on the entire population.",
+                        help="Whether to evaluate individual effect predictions. If not stated, prediction type is "
+                             "assumed to be of the average treatment effect on the sample.",
                         action="store_true")
     parser.add_argument("-o", "--output_path", dest="output_path",
                         help="If provided, a csv file of the evaluation results will be saved under path. If not, it "
-                             "will be printed to terminal",
+                             "will be printed to terminal's standard output.",
                         type=str)
     parser.add_argument("--cf_suffix", dest="cf_suffix",
                         help="If provided, a suffix distinguishing the counterfactual files from their corresponding "
@@ -326,7 +327,7 @@ def __get_parser():
                              "outcome). \n"
                              "For example, say the cf_suffix is '_cf', and say a factual (observed) data file is named "
                              "8c5f509.csv, then its corresponding counterfactual (unobserved) data file will be "
-                             "8c5f509_cf.csv",
+                             "8c5f509_cf.csv.",
                         type=str, default=COUNTERFACTUAL_FILE_SUFFIX)
     return parser
 
